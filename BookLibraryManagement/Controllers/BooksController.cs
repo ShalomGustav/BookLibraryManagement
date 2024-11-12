@@ -1,4 +1,5 @@
-﻿using BookLibraryManagement.Models;
+﻿using BookLibraryManagement.Commands;
+using BookLibraryManagement.Models;
 using BookLibraryManagement.Queries;
 using BookLibraryManagement.Services;
 using MediatR;
@@ -34,10 +35,10 @@ public class BooksController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBookAsync(BookModelDto bookModel)
+    public async Task<IActionResult> CreateBookAsync([FromBody] BookModelDto bookModel)
     {
         var model = BookModelDto.CreateBook(bookModel);
-        var result = await _bookServices.CreateBookAsync(model);
+        var result = await _mediator.Send(new CreateBookCommand(model));
         return Ok(result);
     }
 

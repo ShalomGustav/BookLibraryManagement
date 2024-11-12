@@ -3,5 +3,5 @@ using MediatR;
 
 namespace BookLibraryManagement.Commands
 {
-    public record CreateBookCommand(BookModelDto bookModel) : IRequest<BookModel>;
+    public record CreateBookCommand(BookModel bookModel) : IRequest<BookModel>;
 }
