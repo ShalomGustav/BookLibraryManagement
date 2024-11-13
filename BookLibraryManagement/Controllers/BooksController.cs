@@ -51,7 +51,8 @@ public class BooksController : ControllerBase
             throw new NullReferenceException();
         }
 
-        await _bookServices.UpdateBookAsync(id, title, genre, publishedYear);
+        var result = _bookServices.UpdateBookAsync(id, title, genre, publishedYear);
+        await result;
         return Ok();
     }
 
