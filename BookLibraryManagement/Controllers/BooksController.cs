@@ -51,15 +51,14 @@ public class BooksController : ControllerBase
             throw new NullReferenceException();
         }
 
-        var result = _bookServices.UpdateBookAsync(id, title, genre, publishedYear);
-        await result;
-        return Ok();
+        var result = await _mediator.Send(new UpdateBookCommand(id, title, genre, publishedYear));
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]
     public async Task<bool> DeleteBookAsync(Guid id)
     {
-        var result = await _bookServices.DeleteBookAsync(id);
+        var result = await _mediator.Send(new DeleteBookCommand(id));
         return result;
     }
 
