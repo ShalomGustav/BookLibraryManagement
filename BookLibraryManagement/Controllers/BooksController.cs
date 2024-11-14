@@ -20,6 +20,12 @@ public class BooksController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet("test-error")]
+    public IActionResult TestError()
+    {
+        throw new Exception("Тестовое исключение");
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAllBooksAsync()
     {
