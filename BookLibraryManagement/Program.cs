@@ -1,6 +1,9 @@
 using BookLibraryManagement.Middlewares;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
+using BookLibraryManagement.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +15,15 @@ builder.Services.AddScoped<BookServices>();
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));//регистрация для сборки
 
+
+
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<BookModelValidator>());
+builder.Services.AddFluentValidationAutoValidation();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
