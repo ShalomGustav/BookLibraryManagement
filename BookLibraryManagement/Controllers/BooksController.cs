@@ -52,7 +52,7 @@ public class BooksController : ControllerBase
     public async Task<IActionResult> UpdateBookAsync([FromRoute] Guid id, [FromQuery] string title, string genre, int publishedYear)
     {
         var existingBook = await _bookServices.GetBookByIdAsync(id);
-        if(existingBook == null)
+        if (existingBook == null)
         {
             throw new NullReferenceException();
         }
@@ -67,5 +67,5 @@ public class BooksController : ControllerBase
         var result = await _mediator.Send(new DeleteBookCommand(id));
         return result;
     }
-
+    
 }
