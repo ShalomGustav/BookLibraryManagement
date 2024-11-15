@@ -43,6 +43,10 @@ public class BooksController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBookAsync([FromBody] BookModelDto bookModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var model = BookModelDto.CreateBook(bookModel);
         var result = await _mediator.Send(new CreateBookCommand(model));
         return Ok(result);
