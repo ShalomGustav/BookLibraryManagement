@@ -3,7 +3,7 @@ using MediatR;
 
 namespace BookLibraryManagement.Commands
 {
-    public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, Unit>
+    public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand>
     {
         private readonly BookServices _bookServices;
 
@@ -12,10 +12,9 @@ namespace BookLibraryManagement.Commands
             _bookServices = bookServices;
         }
 
-        public async Task<Unit> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
            await _bookServices.UpdateBookAsync(request.ID, request.Title, request.Genre, request.PublishedYear);
-           return Unit.Value;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BookLibraryManagement.Queries
 
         public async Task<BookModel> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _bookServices.GetBookByIdAsync(request.Id);
+            var result = await _bookServices.GetBookByIdAsync(request.Id, cancellationToken);
             return result;
         }
     }

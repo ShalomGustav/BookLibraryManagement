@@ -5,6 +5,7 @@ namespace BookLibraryManagement.Middlewares
 {
     public class ErrorHandlingMiddleware
     {
+        //Пример работы с Middleware, для данного проекта излишне, демонстрация работы. 
         private readonly RequestDelegate _next;
 
         public ErrorHandlingMiddleware(RequestDelegate next)
@@ -26,7 +27,7 @@ namespace BookLibraryManagement.Middlewares
 
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            context.Response.ContentType = "aplication/json";
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var errorDetails = new

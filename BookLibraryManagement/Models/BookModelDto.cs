@@ -1,7 +1,10 @@
-﻿namespace BookLibraryManagement.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookLibraryManagement.Models;
 
 public class BookModelDto
 {
+    [Required]
     public string Title { get; set; }
 
     public BookAuthorModelDto Author { get; set; }
