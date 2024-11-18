@@ -30,7 +30,7 @@ public class BookServices
         return result;
     }
 
-    public async Task<BookModel> GetBookByIdAsync(Guid id)
+    public async Task<BookModel> GetBookByIdAsync(Guid id,CancellationToken ctx)
     {
         if(id == Guid.Empty)
         {
@@ -39,7 +39,7 @@ public class BookServices
 
         var result = await _dbContext.Books
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(y => y.Id == id);
+            .FirstOrDefaultAsync(y => y.Id == id, ctx);
         return result;
     }
 

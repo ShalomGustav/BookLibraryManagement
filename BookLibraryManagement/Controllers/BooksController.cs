@@ -4,6 +4,7 @@ using BookLibraryManagement.Queries;
 using BookLibraryManagement.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookLibraryManagement.Controllers;
 
@@ -34,9 +35,9 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetBookAsync(Guid id)
+    public async Task<IActionResult> GetBookByIdAsync([Required] Guid id, CancellationToken ctx)
     {
-        var result = await _mediator.Send(new GetBookByIdQuery(id));
+        var result = await _mediator.Send(new GetBookByIdQuery(id), ctx);
         return Ok(result);
     }
 
@@ -53,7 +54,7 @@ public class BooksController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBookAsync([FromRoute] Guid id, [FromQuery] string title, string genre, int publishedYear)
+    public async Task<IActionResult> UpdateBookAsync([FromRoute] [Required] Guid id, [FromQuery] string title, string genre, int publishedYear)
     {
         var existingBook = await _bookServices.GetBookByIdAsync(id);
         if (existingBook == null)
@@ -61,12 +62,14 @@ public class BooksController : ControllerBase
             throw new NullReferenceException();
         }
 
-        var result = await _mediator.Send(new UpdateBookCommand(id, title, genre, publishedYear));
+        await _mediator.Send(new UpdateBookCommand(id, title, genre, publishedYear));
+
+        var result = _mediator.Send(new GetBookByIdQuery(id));
         return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<bool> DeleteBookAsync(Guid id)
+    public async Task<bool> DeleteBookAsync([Required] Guid id)
     {
         var result = await _mediator.Send(new DeleteBookCommand(id));
         return result;
