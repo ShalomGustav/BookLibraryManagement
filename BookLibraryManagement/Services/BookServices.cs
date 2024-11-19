@@ -13,19 +13,19 @@ public class BookServices
         _dbContext = dbContext;
     }
 
-    public async Task<List<BookModel>> GetAllAsync()//
+    public async Task<List<BookModel>> GetAllAsync(CancellationToken ctx)//
     {
         var result = await _dbContext.Books
             .Include(x => x.Author)
-            .ToListAsync();
+            .ToListAsync(ctx);
 
         return result;
     }
 
-    public async Task<List<BookAuthorModel>> GetAllAuthorAsync()//
+    public async Task<List<BookAuthorModel>> GetAllAuthorAsync(CancellationToken ctx)//
     {
         var result = await _dbContext.BookAuthor
-            .ToListAsync();
+            .ToListAsync(ctx);
 
         return result;
     }
@@ -43,17 +43,17 @@ public class BookServices
         return result;
     }
 
-    public async Task<BookModel> CreateBookAsync(BookModel bookModel)
+    public async Task<BookModel> CreateBookAsync(BookModel bookModel, CancellationToken ctx)
     {
-        await _dbContext.Books.AddAsync(bookModel);
-        await _dbContext.SaveChangesAsync();    
+        await _dbContext.Books.AddAsync(bookModel,ctx);
+        await _dbContext.SaveChangesAsync(ctx);    
 
         return bookModel;
     }
     
-    public async Task UpdateBookAsync(Guid id, string title, string genre, int publishedYear)
+    public async Task UpdateBookAsync(Guid id, string title, string genre, int publishedYear, CancellationToken ctx)
     {
-        var existBook = await _dbContext.Books.FirstOrDefaultAsync(y => y.Id == id);
+        var existBook = await _dbContext.Books.FirstOrDefaultAsync(y => y.Id == id, ctx);
 
         if (existBook != null)
         {
@@ -61,20 +61,20 @@ public class BookServices
             existBook.Genre = genre;  
             existBook.PublishedYear = publishedYear;
 
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ctx);
         }
     }
 
-    public async Task<bool> DeleteBookAsync(Guid id)
+    public async Task<bool> DeleteBookAsync(Guid id, CancellationToken ctx)
     {
         var existBook = await _dbContext.Books
             .Include(x => x.Author)
-            .FirstOrDefaultAsync(y => y.Id == id);
+            .FirstOrDefaultAsync(y => y.Id == id, ctx);
 
         if (existBook != null)
         {
             _dbContext.Books.Remove(existBook);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ctx);
             return true;
         }
         return false;

@@ -42,21 +42,21 @@ public class BooksController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBookAsync([FromBody] BookModelDto bookModel)
+    public async Task<IActionResult> CreateBookAsync([FromBody] BookModelDto bookModel, CancellationToken ctx)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         var model = BookModelDto.CreateBook(bookModel);
-        var result = await _mediator.Send(new CreateBookCommand(model));
+        var result = await _mediator.Send(new CreateBookCommand(model), ctx);
         return Ok(result);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBookAsync([FromRoute] [Required] Guid id, [FromQuery] string title, string genre, int publishedYear)
+    public async Task<IActionResult> UpdateBookAsync([FromRoute] [Required] Guid id, [FromQuery] string title, string genre, int publishedYear, CancellationToken ctx)
     {
-        var existingBook = await _bookServices.GetBookByIdAsync(id);
+        var existingBook = await _bookServices.GetBookByIdAsync(id, ctx);
         if (existingBook == null)
         {
             throw new NullReferenceException();
@@ -64,14 +64,14 @@ public class BooksController : ControllerBase
 
         await _mediator.Send(new UpdateBookCommand(id, title, genre, publishedYear));
 
-        var result = _mediator.Send(new GetBookByIdQuery(id));
+        var result = _mediator.Send(new GetBookByIdQuery(id), ctx);
         return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<bool> DeleteBookAsync([Required] Guid id)
+    public async Task<bool> DeleteBookAsync([Required] Guid id, CancellationToken ctx)
     {
-        var result = await _mediator.Send(new DeleteBookCommand(id));
+        var result = await _mediator.Send(new DeleteBookCommand(id), ctx);
         return result;
     }
     
