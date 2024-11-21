@@ -5,7 +5,7 @@ namespace BookLibraryManagement.Middlewares
 {
     public class ErrorHandlingMiddleware
     {
-        //Пример работы с Middleware, для данного проекта излишне, демонстрация работы. 
+        //Пример работы с Middleware, для данного проекта излишне, просто демонстрация работы. 
         private readonly RequestDelegate _next;
 
         public ErrorHandlingMiddleware(RequestDelegate next)
