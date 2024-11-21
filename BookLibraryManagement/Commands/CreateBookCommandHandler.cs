@@ -13,9 +13,9 @@ namespace BookLibraryManagement.Commands
             _bookServices = bookServices;
         }
 
-        public async Task<BookModel> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+        public async Task<BookModel> Handle(CreateBookCommand request, CancellationToken ctx)
         {
-            var result = await _bookServices.CreateBookAsync(request.bookModel);
+            var result = await _bookServices.CreateBookAsync(request.bookModel, ctx);
             return result;
         }
     }

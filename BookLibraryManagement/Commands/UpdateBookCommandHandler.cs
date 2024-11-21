@@ -12,9 +12,9 @@ namespace BookLibraryManagement.Commands
             _bookServices = bookServices;
         }
 
-        public async Task Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdateBookCommand request, CancellationToken ctx)
         {
-           await _bookServices.UpdateBookAsync(request.ID, request.Title, request.Genre, request.PublishedYear);
+           await _bookServices.UpdateBookAsync(request.ID, request.Title, request.Genre, request.PublishedYear, ctx);
         }
     }
 }

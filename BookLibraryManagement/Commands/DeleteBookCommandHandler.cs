@@ -12,9 +12,9 @@ namespace BookLibraryManagement.Commands
             _bookServices = bookServices;
         }
 
-        public async Task<bool> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteBookCommand request, CancellationToken ctx)
         {
-            var result = await _bookServices.DeleteBookAsync(request.ID);
+            var result = await _bookServices.DeleteBookAsync(request.ID, ctx);
             return result;
         }
     }

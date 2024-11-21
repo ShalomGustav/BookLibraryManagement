@@ -40,6 +40,7 @@ public class BookServices
         var result = await _dbContext.Books
             .Include(x => x.Author)
             .FirstOrDefaultAsync(y => y.Id == id, ctx);
+
         return result;
     }
 
@@ -75,6 +76,7 @@ public class BookServices
         {
             _dbContext.Books.Remove(existBook);
             await _dbContext.SaveChangesAsync(ctx);
+
             return true;
         }
         return false;

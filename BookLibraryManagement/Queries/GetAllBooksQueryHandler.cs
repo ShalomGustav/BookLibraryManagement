@@ -13,9 +13,9 @@ namespace BookLibraryManagement.Queries
             _bookService = bookServices;
         }
 
-        public async Task<List<BookModel>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
+        public async Task<List<BookModel>> Handle(GetAllBooksQuery request, CancellationToken ctx)
         {
-            return await _bookService.GetAllAsync();
+            return await _bookService.GetAllAsync(ctx);
         }
     }
 }
