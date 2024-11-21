@@ -14,7 +14,8 @@ builder.Services.AddScoped<BookServices>();
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));//регистрация для сборки
 
 builder.Services.AddFluentValidationAutoValidation(); //проверить зависимости 
-
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
