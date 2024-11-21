@@ -1,6 +1,8 @@
 ﻿using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Moq.EntityFrameworkCore;
 using System;
@@ -16,27 +18,39 @@ namespace BookLibraryManagement.Tests
         [Fact]
         public async Task GetAllAsyncTests()
         {
-            //Arrange
-            var books = new List<BookModel>
-            {
-                new BookModel {Id = Guid.NewGuid(), Title = "Тестовое описание для UnitTests_1"},
-                new BookModel {Id = Guid.NewGuid(), Title = "Тестовое описание для UnitTests_2"}
-            };
+            // Создаем изолированный ServiceProvider для тестов
+            var serviceProvider = ConfigureInMemoryServices();
 
-            var mockContext = new Mock<BookDbContext>();
-            mockContext.Setup(x => x.Books).ReturnsDbSet(books);
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<BookDbContext>();
 
-            var mocDbService = new BookServices(mockContext.Object);
+            // Добавляем тестовые данные
+            context.Books.Add(new BookModel { Id = Guid.NewGuid(), Title = "Test Book", Genre = "Fiction", PublishedYear = 2022 });
+            context.SaveChanges();
 
-            //Act
-            var result = await mocDbService.GetAllAsync(CancellationToken.None);
+            // Используем BookServices из ServiceProvider
+            var service = scope.ServiceProvider.GetRequiredService<BookServices>();
 
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal("Тестовое описание для UnitTests_1", result[0].Title);
-            Assert.Equal("Тестовое описание для UnitTests_2", result[1].Title);
+            // Вызываем метод сервиса
+            var result = await service.GetAllAsync(CancellationToken.None);
 
+            // Проверяем результат
+            Assert.Single(result);
+            Assert.Equal("Test Book", result[0].Title);
+        }
+
+        private IServiceProvider ConfigureInMemoryServices()
+        {
+            var services = new ServiceCollection();
+
+            // Настраиваем контекст только с InMemoryDatabase
+            services.AddDbContext<BookDbContext>(options =>
+                options.UseInMemoryDatabase("TestDatabase")); // Никакого SqlServer!
+
+            // Регистрируем BookServices
+            services.AddScoped<BookServices>();
+
+            return services.BuildServiceProvider();
         }
 
         //public async Task GetAllAuthorAsyncTests()
