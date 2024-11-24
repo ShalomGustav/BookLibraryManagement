@@ -1,4 +1,5 @@
-﻿using BookLibraryManagement.Models;
+﻿using BookLibraryManagement.Interfaces;
+using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,67 +16,56 @@ namespace BookLibraryManagement.Tests
 {
     public class BookServicesTests
     {
-        //[Fact]
-        //public async Task GetAllAsyncTests()
-        //{
-        //    // Создаем изолированный ServiceProvider для тестов
-        //    var serviceProvider = ConfigureInMemoryServices();
+        [Fact]
+        public async Task GetAllAsyncTests()
+        {
+            // Arrange: подготовка теста
+            var mockBookService = new Mock<IBookServices>();
+            // Создаем мок (поддельный объект), который реализует интерфейс IBookServices.
+            // Это позволит настроить его методы для возврата тестовых данных.
 
-        //    using var scope = serviceProvider.CreateScope();
-        //    var context = scope.ServiceProvider.GetRequiredService<BookDbContext>();
+            mockBookService.Setup(service => service.GetAllAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<BookModel>
+                {
+                // Настраиваем метод GetAllAsync так, чтобы он возвращал список из двух книг.
+                new BookModel
+                {
+                    Id = Guid.NewGuid(), // Генерируем уникальный идентификатор
+                    Title = "Book 1", // Задаем название книги
+                    Author = new BookAuthorModel { FullName = "Author 1" } // Задаем автора книги
+                },
+                new BookModel
+                {
+                    Id = Guid.NewGuid(), // Генерируем уникальный идентификатор
+                    Title = "Book 2", // Задаем название второй книги
+                    Author = new BookAuthorModel { FullName = "Author 2" } // Задаем автора второй книги
+                }
+                });
+            // Настройка мока завершена: теперь метод GetAllAsync всегда возвращает этот список.
 
-        //    // Добавляем тестовые данные
-        //    context.Books.Add(new BookModel { Id = Guid.NewGuid(), Title = "Test Book", Genre = "Fiction", PublishedYear = 2022 });
-        //    context.SaveChanges();
+            // Act: выполнение тестируемого метода
+            var result = await mockBookService.Object.GetAllAsync(CancellationToken.None);
+            // Вызываем метод GetAllAsync у настроенного мока.
+            // CancellationToken.None указывает, что отмена вызова не предполагается.
 
-        //    // Используем BookServices из ServiceProvider
-        //    var service = scope.ServiceProvider.GetRequiredService<BookServices>();
+            // Assert: проверка результатов
+            Assert.NotNull(result);
+            // Проверяем, что результат не является null.
 
-        //    // Вызываем метод сервиса
-        //    var result = await service.GetAllAsync(CancellationToken.None);
+            Assert.Equal(2, result.Count);
+            // Проверяем, что список содержит ровно две книги.
 
-        //    // Проверяем результат
-        //    Assert.Single(result);
-        //    Assert.Equal("Test Book", result[0].Title);
-        //}
+            Assert.Equal("Book 1", result[0].Title);
+            // Проверяем, что название первой книги в списке соответствует "Book 1".
 
-        //private IServiceProvider ConfigureInMemoryServices()
-        //{
-        //    var services = new ServiceCollection();
+            Assert.Equal("Author 1", result[0].Author.FullName);
+            // Проверяем, что имя автора первой книги соответствует "Author 1".
 
-        //    // Настраиваем контекст только с InMemoryDatabase
-        //    services.AddDbContext<BookDbContext>(options =>
-        //        options.UseInMemoryDatabase("TestDatabase")); // Никакого SqlServer!
+            Assert.Equal("Book 2", result[1].Title);
+            // Проверяем, что название второй книги в списке соответствует "Book 2".
 
-        //    // Регистрируем BookServices
-        //    services.AddScoped<BookServices>();
-
-        //    return services.BuildServiceProvider();
-        //}
-
-        //public async Task GetAllAuthorAsyncTests()
-        //{
-
-        //}
-
-        //public async Task GetBookByIdAsyncTests()
-        //{
-
-        //}
-
-        //public async Task CreateBookAsyncTests()
-        //{
-
-        //}
-
-        //public async Task UpdateBookAsyncTests()
-        //{
-
-        //}
-
-        //public async Task DeleteBookAsyncTests()
-        //{
-
-        //}
+            Assert.Equal("Author 2", result[1].Author.FullName);
+            // Проверяем, что имя автора второй книги соответствует "Author 2".
+        }
     }
 }

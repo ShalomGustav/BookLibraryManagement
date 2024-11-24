@@ -1,10 +1,11 @@
-﻿using BookLibraryManagement.Models;
+﻿using BookLibraryManagement.Interfaces;
+using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookLibraryManagement.Services;
 
-public class BookServices 
+public class BookServices : IBookServices
 {
     private readonly BookDbContext _dbContext;
 
