@@ -16,7 +16,7 @@ namespace BookLibraryManagement.Tests
         [Fact]
         private async Task GetAllAsyncTests()
         {
-            // Arrange: подготовка теста
+            // Arrange
             _mockBookServices.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<BookModel>
                 {                
@@ -37,10 +37,10 @@ namespace BookLibraryManagement.Tests
                     },
                 });
 
-            // Act: выполнение тестируемого метода
+            // Act
             var result = await _mockBookServices.Object.GetAllAsync(CancellationToken.None); // CancellationToken.None указывает, что отмена вызова не предполагается.
             var book = result[0];
-            // Assert: проверка результатов
+            // Assert
             Assert.NotNull(result); 
             Assert.Single(result);
 
@@ -78,6 +78,7 @@ namespace BookLibraryManagement.Tests
                         },
                     }
                 });
+
             //Act
             var result = await _mockBookServices.Object.GetAllAuthorAsync(CancellationToken.None);
             var book = result[0];
@@ -100,7 +101,38 @@ namespace BookLibraryManagement.Tests
         [Fact]
         private async Task GetBookByIdAsyncTests()
         {
+            var TestId = Guid.NewGuid();
+            //Arrange 
+            _mockBookServices.Setup(x => x.GetBookByIdAsync(
+                It.Is<Guid>(x => x == TestId),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new BookModel
+                {
+                    Id = TestId,
+                    Title = "Title 1",
+                    Genre = "Genre 1",
+                    PublishedYear = 2010,
+                    Author = new BookAuthorModel
+                    {
+                        Id = Guid.NewGuid(),
+                        FullName = "FullName 1",
+                        Birthday = new DateTime(2010, 11, 9)
+                    }
+                });
+            //Act
+            var result = await _mockBookServices.Object.GetBookByIdAsync(TestId,CancellationToken.None);
+            //Assert
+            Assert.NotNull(result);
 
+            Assert.Equal(TestId, result.Id);
+            Assert.Equal("Title 1", result.Title);
+            Assert.Equal("Genre 1", result.Genre);
+            Assert.Equal(2010, result.PublishedYear);
+
+            Assert.NotNull(result.Author);
+            Assert.NotEqual(Guid.Empty,result.Author.Id);
+            Assert.Equal("FullName 1", result.Author.FullName);
+            Assert.Equal(new DateTime(2010, 11, 9), result.Author.Birthday);
         }
     }
 }
