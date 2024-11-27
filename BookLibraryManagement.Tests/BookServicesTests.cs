@@ -13,6 +13,8 @@ namespace BookLibraryManagement.Tests
             _mockBookServices = new Mock<IBookServices>();
         }
 
+
+
         [Fact]
         private async Task GetAllAsyncTests()
         {
@@ -133,6 +135,61 @@ namespace BookLibraryManagement.Tests
             Assert.NotEqual(Guid.Empty,result.Author.Id);
             Assert.Equal("FullName 1", result.Author.FullName);
             Assert.Equal(new DateTime(2010, 11, 9), result.Author.Birthday);
+        }
+
+        [Fact]
+        private async Task CreateBookAsync()
+        {
+            var bookModel = new BookModel
+            {
+                Id = Guid.NewGuid(),
+                AuthorId = Guid.NewGuid(),
+                Genre = "Genre 1",
+                PublishedYear = 2011,
+                Title = "Title 1",
+                Author = new BookAuthorModel
+                {
+                    Id = Guid.NewGuid(),
+                    Birthday = new DateTime(2011, 11, 9),
+                    FullName = "FullName 1"
+                },
+            };
+
+            //Arrange
+            _mockBookServices.Setup(x => x.CreateBookAsync(
+                It.Is<BookModel>(x => x == bookModel),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new BookModel
+                {
+                    Id = bookModel.Id,
+                    AuthorId = bookModel.AuthorId,
+                    Genre = bookModel.Genre,
+                    PublishedYear = bookModel.PublishedYear,
+                    Title = bookModel.Title,
+                    Author = new BookAuthorModel
+                    {
+                        Id = bookModel.Author.Id,
+                        Birthday = bookModel.Author.Birthday,
+                        FullName = bookModel.Author.FullName
+                    }
+                });
+
+            //Act
+            var result = await _mockBookServices.Object.CreateBookAsync(bookModel, CancellationToken.None);
+
+            //Assert
+
+            Assert.NotNull(result);
+            Assert.Equal(bookModel.Id, result.Id);
+            Assert.Equal(bookModel.AuthorId, result.AuthorId);
+            Assert.Equal("Genre 1", result.Genre);
+            Assert.Equal(2011, result.PublishedYear);
+            Assert.Equal("Title 1", result.Title);
+
+            Assert.NotNull(result.Author);
+            Assert.Equal(bookModel.Author.Id, result.Author.Id);
+            Assert.Equal(bookModel.Author.Birthday, result.Author.Birthday);
+            Assert.Equal(bookModel.Author.FullName, result.Author.FullName);
         }
     }
 }
