@@ -5,8 +5,8 @@ namespace BookLibraryManagement.Repositories;
 
 public class BookDbContext : DbContext
 {
-    public DbSet<BookModel> Books { get; set; }
-    public DbSet<BookAuthorModel> BookAuthor { get; set; }
+    public virtual DbSet<BookModel> Books { get; set; }
+    public virtual DbSet<BookAuthorModel> BookAuthor { get; set; }
 
     public BookDbContext()
     {
