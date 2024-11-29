@@ -70,6 +70,25 @@ namespace BookLibraryManagement.Tests
         }
         #endregion
 
+        #region AssertHelpers
+        public static void AssertBookHelper(BookModel book, string title, string genre, int publishedYear)
+        {
+            Assert.NotNull(book);
+            Assert.NotEqual(Guid.Empty, book.Id);
+            Assert.Equal(title, book.Title);
+            Assert.Equal(genre, book.Genre);
+            Assert.Equal(publishedYear, book.PublishedYear);
+        }
+
+        public static void AssertAuthorHelper(BookAuthorModel bookAuthorModel, string fullName, DateTime birthday)
+        {
+            Assert.NotNull(bookAuthorModel);
+            Assert.NotEqual(Guid.Empty, bookAuthorModel.Id);
+            Assert.Equal(fullName, bookAuthorModel.FullName);
+            Assert.Equal(birthday, bookAuthorModel.Birthday);
+        }
+        #endregion
+
 
         [Fact]
         private async Task GetAllAsyncTests()
@@ -86,22 +105,17 @@ namespace BookLibraryManagement.Tests
             // Arrange
             _mockBookServices.Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<BookModel> {CreateTestBook()});
+
             // Act
-            var result = await _mockBookServices.Object.GetAllAsync(CancellationToken.None); // CancellationToken.None указывает, что отмена вызова не предполагается.
+            var result = await _mockBookServices.Object.GetAllAsync(CancellationToken.None); 
             var book = result[0];
+
             // Assert
-            Assert.NotNull(result); 
             Assert.Single(result);
 
-            Assert.NotEqual(Guid.Empty, book.Id);
-            Assert.Equal("Title 1", book.Title);
-            Assert.Equal("Genre 1", book.Genre);
-            Assert.Equal(2000, book.PublishedYear);
+            AssertBookHelper(book, "Title 1", "Genre 1", 2000);
 
-            Assert.NotNull(book.Author);
-            Assert.NotEqual(Guid.Empty, book.Author.Id);
-            Assert.Equal("FullName 1", book.Author.FullName);
-            Assert.Equal(new DateTime(2000, 11, 9), book.Author.Birthday);
+            AssertAuthorHelper(book.Author, "FullName 1", new DateTime(2000, 11, 9));
         }
 
         [Fact]
