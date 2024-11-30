@@ -35,12 +35,4 @@ public class BookDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-
-        //Data Source=(local);Initial Catalog=BookLibrary;Persist Security Info=True;User ID=test;Password=test;MultipleActiveResultSets=True;Connect Timeout=30;TrustServerCertificate=True
-        //Server=DESKTOP-LRED2L4;Database=BookLibrary;Trusted_Connection=True;TrustServerCertificate=True;
-        optionsBuilder.UseSqlServer("Server=DESKTOP-LRED2L4;Database=BookLibrary;Trusted_Connection=True;TrustServerCertificate=True");
-    }
 }

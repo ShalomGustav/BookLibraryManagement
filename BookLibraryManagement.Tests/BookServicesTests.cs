@@ -1,8 +1,6 @@
-﻿using BookLibraryManagement.Interfaces;
-using BookLibraryManagement.Models;
+﻿using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
 
@@ -18,6 +16,7 @@ namespace BookLibraryManagement.Tests
             _mockDbContext = new Mock<BookDbContext>();
             _bookServices = new BookServices(_mockDbContext.Object);
         }
+
         #region ModelsOnTests
         private BookModel CreateTestBook(Action<BookModel> configure = null)
         {
@@ -111,6 +110,7 @@ namespace BookLibraryManagement.Tests
         {
             // Arrange
             var authors = new List<BookAuthorModel> { CreateTestAuthor() };
+
             _mockDbContext.Setup(x => x.BookAuthor).ReturnsDbSet(authors);
 
             // Act
@@ -163,8 +163,8 @@ namespace BookLibraryManagement.Tests
             // Arrange
             var book = CreateTestBook(x =>
             {
-                x.Title = "Old Title";    
-                x.Genre = "Old Genre";   
+                x.Title = "Old Title";
+                x.Genre = "Old Genre";
                 x.PublishedYear = 1990;  
             });
 
