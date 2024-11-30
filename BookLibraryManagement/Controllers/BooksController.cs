@@ -74,5 +74,4 @@ public class BooksController : ControllerBase
         var result = await _mediator.Send(new DeleteBookCommand(id), ctx);
         return result;
     }
-    
 }

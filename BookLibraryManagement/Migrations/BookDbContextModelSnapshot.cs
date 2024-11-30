@@ -8,89 +8,88 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BookLibraryManagement.Migrations
+namespace BookLibraryManagement.Migrations;
+
+[DbContext(typeof(BookDbContext))]
+partial class BookDbContextModelSnapshot : ModelSnapshot
 {
-    [DbContext(typeof(BookDbContext))]
-    partial class BookDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.10")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BookLibraryManagement.Models.BookAuthorModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+        modelBuilder.Entity("BookLibraryManagement.Models.BookAuthorModel", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("Birthday")
+                    .HasColumnType("datetime2");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("FullName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("BookAuthor");
-                });
+                b.ToTable("BookAuthor");
+            });
 
-            modelBuilder.Entity("BookLibraryManagement.Models.BookModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("Id");
+        modelBuilder.Entity("BookLibraryManagement.Models.BookModel", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasColumnName("Id");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("AuthorId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)")
-                        .HasColumnName("Genre");
+                b.Property<string>("Genre")
+                    .IsRequired()
+                    .HasMaxLength(128)
+                    .HasColumnType("nvarchar(128)")
+                    .HasColumnName("Genre");
 
-                    b.Property<int>("PublishedYear")
-                        .HasColumnType("int")
-                        .HasColumnName("PublishedYear");
+                b.Property<int>("PublishedYear")
+                    .HasColumnType("int")
+                    .HasColumnName("PublishedYear");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasColumnName("Title");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .HasColumnType("nvarchar(256)")
+                    .HasColumnName("Title");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AuthorId")
-                        .IsUnique();
+                b.HasIndex("AuthorId")
+                    .IsUnique();
 
-                    b.ToTable("Books", (string)null);
-                });
+                b.ToTable("Books", (string)null);
+            });
 
-            modelBuilder.Entity("BookLibraryManagement.Models.BookModel", b =>
-                {
-                    b.HasOne("BookLibraryManagement.Models.BookAuthorModel", "Author")
-                        .WithOne("Book")
-                        .HasForeignKey("BookLibraryManagement.Models.BookModel", "AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+        modelBuilder.Entity("BookLibraryManagement.Models.BookModel", b =>
+            {
+                b.HasOne("BookLibraryManagement.Models.BookAuthorModel", "Author")
+                    .WithOne("Book")
+                    .HasForeignKey("BookLibraryManagement.Models.BookModel", "AuthorId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Author");
-                });
+                b.Navigation("Author");
+            });
 
-            modelBuilder.Entity("BookLibraryManagement.Models.BookAuthorModel", b =>
-                {
-                    b.Navigation("Book")
-                        .IsRequired();
-                });
+        modelBuilder.Entity("BookLibraryManagement.Models.BookAuthorModel", b =>
+            {
+                b.Navigation("Book")
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

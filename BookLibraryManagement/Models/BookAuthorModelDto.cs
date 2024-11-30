@@ -1,15 +1,11 @@
 ﻿namespace BookLibraryManagement.Models;
 
-public class BookAuthorModelDto
+public record BookAuthorModelDto(string FullName, DateTime Birthday)
 {
-    public string FullName { get; set; }
-
-    public DateTime Birthday { get; set; }
-
     public static BookAuthorModel CreateAuthor(BookAuthorModelDto bookAuthor)
     {
-        var result = new BookAuthorModel 
-        { 
+        var result = new BookAuthorModel
+        {
             FullName = bookAuthor.FullName,
             Birthday = bookAuthor.Birthday,
         };
