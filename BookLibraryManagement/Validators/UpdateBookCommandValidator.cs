@@ -1,7 +1,5 @@
 ﻿using BookLibraryManagement.Commands;
-using BookLibraryManagement.Models;
 using FluentValidation;
-using System.Text.RegularExpressions;
 
 namespace BookLibraryManagement.Validators
 {
