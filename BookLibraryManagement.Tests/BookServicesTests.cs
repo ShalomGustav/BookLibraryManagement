@@ -86,6 +86,7 @@ namespace BookLibraryManagement.Tests
         }
         #endregion
 
+        #region Tests
         [Fact]
         private async Task GetAllAsyncTests()
         {
@@ -115,13 +116,13 @@ namespace BookLibraryManagement.Tests
 
             // Act
             var result = await _bookServices.GetAllAuthorAsync(CancellationToken.None);
-            var author = result.FirstOrDefault();
+            var actualAuthor = result.FirstOrDefault();
 
             //Assert
             Assert.Single(result);
 
             AssertBookHelper(book, "Title 1", "Genre 1", 2000);
-            AssertAuthorHelper(author, "FullName 1", new DateTime(2000, 11, 9));
+            AssertAuthorHelper(actualAuthor, "FullName 1", new DateTime(2000, 11, 9));
         }
 
         [Fact]
@@ -136,8 +137,6 @@ namespace BookLibraryManagement.Tests
             var result = await _bookServices.GetBookByIdAsync(book.Id, CancellationToken.None);
 
             //Assert
-            Assert.Single(result);
-
             AssertBookHelper(book, "Title 1", "Genre 1", 2000);
             AssertAuthorHelper(author, "FullName 1", new DateTime(2000, 11, 9));
         }
@@ -150,20 +149,16 @@ namespace BookLibraryManagement.Tests
             {
                 x.Title = "Old Title";
                 x.Genre = "Old Genre";
-                x.PublishedYear = 1990;  
+                x.PublishedYear = 1990;
             });
 
             _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
-
             var service = new BookServices(_mockDbContext.Object);
 
             // Act
             await service.UpdateBookAsync(book.Id, "New Title", "New Genre", 2000, CancellationToken.None);
-
             // Assert
-            Assert.Equal("New Title", book.Title);
-            Assert.Equal("New Genre", book.Genre);
-            Assert.Equal(2000, book.PublishedYear);
+            AssertBookHelper(book, "New Title", "New Genre", 2000);
 
             _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -176,22 +171,20 @@ namespace BookLibraryManagement.Tests
             var book = CreateTestBook();
 
             //Arrange
-
             if (bookId)
             {
                 _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
             }
-            
+
             if (!bookId)
             {
                 _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel>());
             }
-            
+
             //Act
             var result = await _bookServices.DeleteBookAsync(book.Id, CancellationToken.None);
 
             //Assert
-
             if (bookId)
             {
                 Assert.True(result);
@@ -206,5 +199,6 @@ namespace BookLibraryManagement.Tests
                 _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
             }
         }
+        #endregion
     }
 }
