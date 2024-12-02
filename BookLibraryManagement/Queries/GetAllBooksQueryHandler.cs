@@ -2,20 +2,19 @@
 using BookLibraryManagement.Services;
 using MediatR;
 
-namespace BookLibraryManagement.Queries
+namespace BookLibraryManagement.Queries;
+
+public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, List<BookModel>>
 {
-    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, List<BookModel>>
+    private readonly BookServices _bookService;
+
+    public GetAllBooksQueryHandler(BookServices bookServices)
     {
-        private readonly BookServices _bookService;
+        _bookService = bookServices;
+    }
 
-        public GetAllBooksQueryHandler(BookServices bookServices)
-        {
-            _bookService = bookServices;
-        }
-
-        public async Task<List<BookModel>> Handle(GetAllBooksQuery request, CancellationToken ctx)
-        {
-            return await _bookService.GetAllAsync(ctx);
-        }
+    public async Task<List<BookModel>> Handle(GetAllBooksQuery request, CancellationToken ctx)
+    {
+        return await _bookService.GetAllAsync(ctx);
     }
 }
