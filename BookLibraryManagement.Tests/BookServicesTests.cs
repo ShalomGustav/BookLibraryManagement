@@ -101,7 +101,6 @@ namespace BookLibraryManagement.Tests
             Assert.Single(result);
 
             AssertBookHelper(book, "Title 1", "Genre 1", 2000);
-
             AssertAuthorHelper(book.Author, "FullName 1", new DateTime(2000, 11, 9));
         }
 
@@ -110,6 +109,7 @@ namespace BookLibraryManagement.Tests
         {
             // Arrange
             var authors = new List<BookAuthorModel> { CreateTestAuthor() };
+            var book = CreateTestBook();
 
             _mockDbContext.Setup(x => x.BookAuthor).ReturnsDbSet(authors);
 
@@ -118,19 +118,10 @@ namespace BookLibraryManagement.Tests
             var author = result.FirstOrDefault();
 
             //Assert
-            Assert.NotNull(result);
             Assert.Single(result);
 
-            Assert.NotEqual(Guid.Empty, author.Id);
-            Assert.Equal("FullName 1", author.FullName);
-            Assert.Equal(new DateTime(2000, 11, 9), author.Birthday);
-
-            Assert.NotNull(author.Book);
-            Assert.NotEqual(Guid.Empty, author.Book.Id);
-            Assert.Equal("Title 1", author.Book.Title);
-            Assert.Equal(2000, author.Book.PublishedYear);
-            Assert.Equal("Genre 1", author.Book.Genre);
-            Assert.Equal(author.Id, author.Book.AuthorId);
+            AssertBookHelper(book, "Title 1", "Genre 1", 2000);
+            AssertAuthorHelper(author, "FullName 1", new DateTime(2000, 11, 9));
         }
 
         [Fact]
@@ -138,23 +129,17 @@ namespace BookLibraryManagement.Tests
         {
             // Arrange
             var book = CreateTestBook();
+            var author = CreateTestAuthor();
             _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
 
             // Act
             var result = await _bookServices.GetBookByIdAsync(book.Id, CancellationToken.None);
 
             //Assert
-            Assert.NotNull(result);
+            Assert.Single(result);
 
-            Assert.Equal(book.Id, result.Id);
-            Assert.Equal("Title 1", result.Title);
-            Assert.Equal("Genre 1", result.Genre);
-            Assert.Equal(2000, result.PublishedYear);
-
-            Assert.NotNull(result.Author);
-            Assert.Equal(book.Author.Id, result.Author.Id);
-            Assert.Equal("FullName 1", result.Author.FullName);
-            Assert.Equal(new DateTime(2000, 11, 9), result.Author.Birthday);
+            AssertBookHelper(book, "Title 1", "Genre 1", 2000);
+            AssertAuthorHelper(author, "FullName 1", new DateTime(2000, 11, 9));
         }
 
         [Fact]
@@ -183,36 +168,43 @@ namespace BookLibraryManagement.Tests
             _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        //[Theory]
-        //private async Task DeleteBookTrueAsyncTests() // прочитать про входные параметры объединить в один тест 
-        //{
-        //    var book = CreateTestBook();
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        private async Task DeleteBookTrueAsyncTests(bool bookId)
+        {
+            var book = CreateTestBook();
 
-        //    _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
+            //Arrange
 
-        //    //Act
-        //    var result = await _bookServices.DeleteBookAsync(book.Id,CancellationToken.None);
+            if (bookId)
+            {
+                _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
+            }
+            
+            if (!bookId)
+            {
+                _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel>());
+            }
+            
+            //Act
+            var result = await _bookServices.DeleteBookAsync(book.Id, CancellationToken.None);
 
-        //    //Assert
-        //    Assert.True(result);
-        //    _mockDbContext.Verify(x => x.Books.Remove(It.Is<BookModel>(y => y.Id == book.Id)), Times.Once);
-        //    _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        //}
+            //Assert
 
-        //[Theory]
-        //private async Task DeleteBookFalseAsyncTests() // прочитать про входные параметры  объединить в один тест 
-        //{
-        //    var nonExistBookId = Guid.NewGuid();
+            if (bookId)
+            {
+                Assert.True(result);
+                _mockDbContext.Verify(x => x.Books.Remove(It.Is<BookModel>(y => y.Id == book.Id)), Times.Once);
+                _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            }
 
-        //    _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel>());
-
-        //    //Act
-        //    var result = await _bookServices.DeleteBookAsync(nonExistBookId, CancellationToken.None);
-
-        //    //Assert
-        //    Assert.False(result);
-        //    _mockDbContext.Verify(x => x.Books.Remove(It.IsAny<BookModel>()), Times.Never);
-        //    _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        //}
+            if (!bookId)
+            {
+                Assert.False(result);
+                _mockDbContext.Verify(x => x.Books.Remove(It.Is<BookModel>(y => y.Id == book.Id)), Times.Never);
+                _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+            }
+        }
     }
 }
