@@ -18,9 +18,9 @@
 ## Содержание 
 - [Требования](#требования)
 - [Структура проекта](#структура-проекта)
-  - [Commands](#commands)
+  - [Папка Commands](#папка-commands)
     - [Описание команд](#описание-команд)
-  - [Controllers](#controllers)
+  - [Папка Controllers](#папка-controllers)
   - [Interfaces](#interfaces)
   - [Middlewares](#middlewares)
   - [Migrations](#migrations)
@@ -51,7 +51,7 @@
 
 ## **Структура проекта**
 
-# **Commands** 
+# **Папка Commands** 
 
 **Команды** реализуют часть паттерна CQRS и предназначены для изменения состояния данных приложения (создание, обновление или удаление). Каждая команда включает описание данных, которые требуется изменить, и обработчик, реализующий логику выполнения команды. В этом проекте команды реализованы с использованием библиотеки **MediatR**.
 
@@ -116,19 +116,85 @@
 
 ---
 
-## Использование в проекте
+# **Папка Controllers**
 
-1. **Пример отправки команды в контроллере**:
-   ```csharp
-   [HttpPost]
-   public async Task<IActionResult> CreateBookAsync([FromBody] BookModelDto bookModel, CancellationToken ctx)
-   {
-       var model = BookModelDto.CreateBook(bookModel);
-       var result = await _mediator.Send(new CreateBookCommand(model), ctx);
-       return Ok(result);
-   }
-   ```
-   - Здесь создаётся объект `CreateBookCommand` с данными книги и отправляется через `IMediator`.
+**Контроллеры** отвечают за обработку HTTP-запросов, поступающих в API, и направляют их в соответствующие сервисы, команды или запросы. Контроллеры являются мостом между клиентом и бизнес-логикой приложения.
+
+---
+
+## Структура папки Controllers
+
+- **AuthorsController.cs**  
+- **BooksController.cs**  
+
+---
+
+## **Описание контроллеров**
+
+### **AuthorsController**
+
+1. **Описание**:
+   - Контроллер для работы с авторами.
+   - Использует MediatR для выполнения запросов.
+
+2. **Маршруты**:
+   - `[Route("api/authors")]` — базовый маршрут для работы с авторами.
+
+3. **Методы**:
+   - `[HttpGet] GetAllAuthorsAsync()`:
+     - Возвращает список всех авторов.
+     - Использует запрос `GetAllAuthorsQuery` через MediatR.
+---
+
+### **BooksController**
+
+1. **Описание**:
+   - Контроллер для работы с книгами.
+   - Подключает `BookServices` для бизнес-логики и MediatR для выполнения команд и запросов.
+
+2. **Маршруты**:
+   - `[Route("api/books")]` — базовый маршрут для работы с книгами.
+
+3. **Методы**:
+   
+   - `[HttpGet("test-error")] TestError()`:
+     - Искусственно выбрасывает исключение для проверки обработки ошибок через middleware.
+
+   - `[HttpGet] GetAllBooksAsync()`:
+     - Возвращает список всех книг.
+     - Использует запрос `GetAllBooksQuery` через MediatR.
+       
+   - `[HttpGet("{id}")] GetBookByIdAsync(Guid id)`:
+     - Возвращает книгу по её уникальному идентификатору.
+     - Использует запрос `GetBookByIdQuery` через MediatR.
+
+   - `[HttpPost] CreateBookAsync(BookModelDto bookModel)`:
+     - Добавляет новую книгу.
+     - Использует команду `CreateBookCommand` через MediatR.
+
+   - `[HttpPut("{id}")] UpdateBookAsync(Guid id, ...)`:
+     - Обновляет информацию о книге.
+     - Использует команду `UpdateBookCommand` через MediatR.
+
+   - `[HttpDelete("{id}")] DeleteBookAsync(Guid id)`:
+     - Удаляет книгу по её ID.
+     - Использует команду `DeleteBookCommand` через MediatR.
+
+---
+
+## Общие принципы
+
+1. **Использование MediatR**:
+   - Уменьшает связанность между контроллерами и слоями бизнес-логики.
+
+2. **Обработка ошибок**:
+   - Исключения обрабатываются через middleware, что позволяет сократить количество проверок в контроллерах.
+
+3. **Валидация**:
+   - Валидация данных входного запроса осуществляется через `ModelState` и FluentValidation.
+
+---
+
 
 
 
