@@ -21,6 +21,8 @@
   - [Папка Commands](#папка-commands)
     - [Описание команд](#описание-команд)
   - [Папка Controllers](#папка-controllers)
+    - [AuthorsController](#authorscontroller)
+    - [BooksController](#bookscontroller)
   - [Interfaces](#interfaces)
   - [Middlewares](#middlewares)
   - [Migrations](#migrations)
