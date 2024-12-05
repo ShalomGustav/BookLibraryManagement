@@ -20,6 +20,7 @@
 - [Структура проекта](#структура-проекта)
   - [Папка Commands](#папка-commands)
     - [Описание команд](#описание-команд)
+    - [Общие принципы](#общие-принципы)
   - [Папка Controllers](#папка-controllers)
     - [AuthorsController](#authorscontroller)
     - [BooksController](#bookscontroller)
