@@ -164,23 +164,23 @@
 
    - `[HttpGet] GetAllBooksAsync()`:
      - Возвращает список всех книг.
-     - Использует запрос `GetAllBooksQuery` через MediatR.
+     - Использует запрос `GetAllBooksQuery` через `MediatR`.
        
    - `[HttpGet("{id}")] GetBookByIdAsync(Guid id)`:
      - Возвращает книгу по её уникальному идентификатору.
-     - Использует запрос `GetBookByIdQuery` через MediatR.
+     - Использует запрос `GetBookByIdQuery` через `MediatR`.
 
    - `[HttpPost] CreateBookAsync(BookModelDto bookModel)`:
      - Добавляет новую книгу.
-     - Использует команду `CreateBookCommand` через MediatR.
+     - Использует команду `CreateBookCommand` через `MediatR`.
 
    - `[HttpPut("{id}")] UpdateBookAsync(Guid id, ...)`:
      - Обновляет информацию о книге.
-     - Использует команду `UpdateBookCommand` через MediatR.
+     - Использует команду `UpdateBookCommand` через `MediatR`.
 
    - `[HttpDelete("{id}")] DeleteBookAsync(Guid id)`:
      - Удаляет книгу по её ID.
-     - Использует команду `DeleteBookCommand` через MediatR.
+     - Использует команду `DeleteBookCommand` через `MediatR`.
 
 ---
 
@@ -193,7 +193,7 @@
    - Исключения обрабатываются через middleware, что позволяет сократить количество проверок в контроллерах.
 
 3. **Валидация**:
-   - Валидация данных входного запроса осуществляется через `ModelState` и FluentValidation.
+   - Валидация данных входного запроса осуществляется через `ModelState` и `FluentValidation`.
 
 ---
 
