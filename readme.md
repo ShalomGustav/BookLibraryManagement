@@ -332,7 +332,6 @@
   - Класс: `GetAllAuthorsQueryHandler`.
   - Логика: Использует метод `GetAllAuthorAsync` из `BookServices` для извлечения данных об авторах из базы данных.
 
----
 
 ### **GetAllBooksQuery**
 - **Описание**:  
@@ -343,7 +342,6 @@
   - Класс: `GetAllBooksQueryHandler`.
   - Логика: Использует метод `GetAllAsync` из `BookServices` для извлечения данных о книгах.
 
----
 
 ### **GetBookByIdQuery**
 - **Описание**:  
@@ -354,7 +352,6 @@
   - Класс: `GetBookByIdQueryHandler`.
   - Логика: Использует метод `GetBookByIdAsync` из `BookServices` для получения книги по её `Id`.
 
----
 
 ### **GetAllAuthorsQueryHandler**
 - **Описание**:  
@@ -364,7 +361,6 @@
 - **Метод**:  
   - `Handle`: Использует метод `GetAllAuthorAsync` из `BookServices`, чтобы асинхронно вернуть список авторов.
 
----
 
 ### **GetAllBooksQueryHandler**
 - **Описание**:  
@@ -374,7 +370,6 @@
 - **Метод**:  
   - `Handle`: Асинхронно вызывает метод `GetAllAsync` из `BookServices` для получения всех записей о книгах.
 
----
 
 ### **GetBookByIdQueryHandler**
 - **Описание**:  
