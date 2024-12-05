@@ -20,11 +20,11 @@
 - [Структура проекта](#структура-проекта)
   - [Папка Commands](#папка-commands)
     - [Описание команд](#описание-команд)
-    - [Общие принципы](#общие-принципы)
+    - [Общие принципы Commands](#общие-принципы-commands)
   - [Папка Controllers](#папка-controllers)
     - [AuthorsController](#authorscontroller)
     - [BooksController](#bookscontroller)
-    - [Общие принципы](#общие-принципы)
+    - [Общие принципы Controllers](#общие-принципы-controllers)
   - [Interfaces](#interfaces)
   - [Middlewares](#middlewares)
   - [Migrations](#migrations)
@@ -105,7 +105,7 @@
    - Вызывает метод `DeleteBookAsync` из `BookServices`.
 ---
 
-## Общие принципы
+## Общие принципы Commands
 
 1. **Разделение ответственности**:
    - Команда отвечает за описание действия, но не за его реализацию.
@@ -186,7 +186,7 @@
 
 ---
 
-# **Общие принципы**
+# **Общие принципы Controllers**
 
 1. **Использование MediatR**:
    - Уменьшает связанность между контроллерами и слоями бизнес-логики.
