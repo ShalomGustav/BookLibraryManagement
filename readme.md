@@ -50,8 +50,9 @@
 
 ## **Требования**
 
-- .NET 7
-- SQL Server
+- .NET 6.0 SDK или выше
+- Microsoft SQL Server
+- Среда разработки: Visual Studio 2022 / Rider / VS Code
   
 Проект использует следующие библиотеки и пакеты:
 - `Entity Framework Core`
