@@ -32,7 +32,7 @@
   - [Models](#models)
     - [Основные компоненты ](#основные-компоненты)
   - [Queries](#queries)
-    - [Описание компонентов Queries](#описание компонентов Queries)
+    - [Описание компонентов Queries](#описание-компонентов-queries)
   - [Repositories](#repositories)
   - [Services](#srevices)
   - [Validators](#validators)
