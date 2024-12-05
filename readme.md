@@ -23,6 +23,7 @@
   - [Папка Controllers](#папка-controllers)
     - [AuthorsController](#authorscontroller)
     - [BooksController](#bookscontroller)
+    - [Общие принципы](#общие-принципы)
   - [Interfaces](#interfaces)
   - [Middlewares](#middlewares)
   - [Migrations](#migrations)
