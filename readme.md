@@ -27,7 +27,7 @@
     - [Общие принципы Controllers](#общие-принципы-controllers)
   - [Interfaces](#interfaces)
   - [Middlewares](#middlewares)
-    - [Описание компонентов Middlewares](#описание-компонентов)
+    - [Описание компонентов Middlewares](#описание-компонентов-middlewares)
   - [Migrations](#migrations)
   - [Models](#models)
     - [Основные компоненты ](#основные-компоненты)
@@ -36,7 +36,7 @@
   - [Repositories](#repositories)
     - [Основные элементы класса BookDbContext](#основные-элементы-класса-bookdbcontext)
     - [Методы класса BookDbContext](#методы-класса-bookdbcontext)
-  - [Services](#srevices)
+  - [Services](#services)
     - [Взаимодействие с MediatR](#взаимодействие-с-mediatr)
     - [Основные методы](#основные-методы)
     - [Особенности реализации](#особенности-реализации)
@@ -45,6 +45,7 @@
   - [Основные настройки](#основные-астройки)
 - [Program.cs](#program.cs)
   - [Основные компоненты Program.cs](#основные-компоненты-program.cs)
+- [Тестирование приложения](#тестирование-приложения)
   
 
 
@@ -63,7 +64,7 @@
 
 ## **Структура проекта**
 
-# **Папка Commands** 
+# **Commands** 
 
 **Команды** реализуют часть паттерна CQRS и предназначены для изменения состояния данных приложения (создание, обновление или удаление). Каждая команда включает описание данных, которые требуется изменить, и обработчик, реализующий логику выполнения команды. В этом проекте команды реализованы с использованием библиотеки **MediatR**.
 
@@ -219,9 +220,10 @@
 
 ---
 
-## ErrorHandlingMiddleware
+## **Описание компонентов Middlewares**
 
-### Описание
+### ErrorHandlingMiddleware
+
 
 `ErrorHandlingMiddleware` демонстрирует, как можно централизованно обрабатывать исключения в приложении. Этот компонент перехватывает любые необработанные исключения, возникающие в процессе обработки запросов, и возвращает стандартизированный JSON-ответ.
 
@@ -492,6 +494,8 @@
 
 ---
 
+## **Services**
+
 ## **Основные методы**
 
 ### **GetAllAsync(CancellationToken ctx)**
@@ -704,4 +708,103 @@
 
 ### Основные компоненты
 
+#### Настройка конфигурации приложения:
+```csharp
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json")
+    .Build();
 
+```
+- Используется для загрузки конфигураций из файла `appsettings.json`.
+  
+#### Регистрация сервисов:
+  
+```csharp
+builder.Services.AddDbContext<BookDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+```
+- Регистрируется контекст базы данных `BookDbContext`, использующий `SQL` Server с настройками из `appsettings.json`.
+  
+---
+
+```csharp
+builder.Services.AddScoped<BookServices>();
+```
+- Регистрируется сервис `BookService` с областью действия `Scoped`.
+
+---
+
+```csharp
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));
+```
+- Используется библиотека `MediatR` для реализации паттерна `CQRS`.
+
+---
+
+```csharp
+builder.Services.AddFluentValidationAutoValidation();
+```
+
+- Автоматическая регистрация валидаторов `FluentValidation`.
+
+---
+
+```csharp
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+```
+- Добавляется поддержка авторизации и регистрация контроллеров.
+  
+---
+
+#### Настройка Swagger:
+
+```csharp
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+```
+
+- `Swagger` используется для документирования `API`.
+
+  ---
+
+ #### Конвейер обработки запросов:
+
+```csharp
+ app.UseMiddleware<ErrorHandlingMiddleware>();
+```
+
+- Добавляется промежуточное ПО(`Middleware`) для обработки ошибок.
+
+---
+
+```csharp
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+```
+
+- `Swagger` доступен только в режиме разработки.
+
+---
+
+```csharp
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+```
+
+- Настраиваются редирект на `HTTPS`, авторизация и маршрутизация к контроллерам.
+
+#### Запуск приложения:
+
+```scharp
+app.Run();
+```
+
+- Запускается веб-приложение.
+
+---
