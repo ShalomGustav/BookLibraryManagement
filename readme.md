@@ -68,7 +68,7 @@
 
 ---
 
-## Структура папки `Commands`
+## Структура папки Commands
 
 - `CreateBookCommand.cs`
 - `CreateBookCommandHandler.cs`
