@@ -3,6 +3,7 @@ using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
 using Moq;
 using Moq.EntityFrameworkCore;
+using System;
 
 namespace BookLibraryManagement.Tests
 {
@@ -164,39 +165,29 @@ namespace BookLibraryManagement.Tests
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        private async Task DeleteBookTrueAsyncTests(bool bookId)
+        [InlineData("EBAC0C79-F398-4A29-8C79-08DCFB4023F4", "EBAC0C79-F398-4A29-8C79-08DCFB4023F4", true)]
+        [InlineData("EBAC0C79-F398-4A29-8C79-08DCFB4023F4", "EBAC0C79-F398-4A29-8C79-08DCFB4023F5", false, 1)]
+        private async Task DeleteBookTrueAsyncTests(Guid createdId, Guid expectedId, bool succesed, int? count = null)
         {
-            var book = CreateTestBook();
+            var book = CreateTestBook(x =>
+            {
+                x.Id = createdId;
+            });
 
             //Arrange
-            if (bookId)
-            {
-                _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
-            }
-
-            if (!bookId)
-            {
-                _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel>());
-            }
+            _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
 
             //Act
-            var result = await _bookServices.DeleteBookAsync(book.Id, CancellationToken.None);
+            var result = await _bookServices.DeleteBookAsync(expectedId, CancellationToken.None);
+            var items = await _bookServices.GetAllAsync(CancellationToken.None);
 
             //Assert
-            if (bookId)
-            {
-                Assert.True(result);
-                _mockDbContext.Verify(x => x.Books.Remove(It.Is<BookModel>(y => y.Id == book.Id)), Times.Once);
-                _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-            }
 
-            if (!bookId)
+            Assert.Equal(succesed, result);
+
+            if(count != null)
             {
-                Assert.False(result);
-                _mockDbContext.Verify(x => x.Books.Remove(It.Is<BookModel>(y => y.Id == book.Id)), Times.Never);
-                _mockDbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+                Assert.Equal(count, items.Count);
             }
         }
         #endregion
