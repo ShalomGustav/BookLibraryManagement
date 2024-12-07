@@ -1,22 +1,21 @@
 ﻿using BookLibraryManagement.Commands;
 using FluentValidation;
 
-namespace BookLibraryManagement.Validators
+namespace BookLibraryManagement.Validators;
+
+public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
 {
-    public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
+    public UpdateBookCommandValidator()
     {
-        public UpdateBookCommandValidator()
-        {
-            RuleFor(x => x.ID).NotEmpty().NotNull();
- 
-            RuleFor(x => x.PublishedYear)
-                .InclusiveBetween(1, 9999).WithMessage("Range on 1 to 9999");
+        RuleFor(x => x.ID).NotEmpty().NotNull();
 
-            RuleFor(x => x.Title).NotEmpty().NotNull();
+        RuleFor(x => x.PublishedYear)
+            .InclusiveBetween(1, 9999).WithMessage("Range on 1 to 9999");
 
-            RuleFor(x => x.Genre)
-                .NotEmpty()
-                .Matches(@"^[a-zA-Z0-9\s]{1,30}$").WithMessage("Full name can only contain letters, numbers, and spaces, max 30 chars.");
-        }
+        RuleFor(x => x.Title).NotEmpty().NotNull();
+
+        RuleFor(x => x.Genre)
+            .NotEmpty()
+            .Matches(@"^[a-zA-Z0-9\s]{1,30}$").WithMessage("Full name can only contain letters, numbers, and spaces, max 30 chars.");
     }
 }

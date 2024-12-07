@@ -100,6 +100,7 @@ public class BookServices : IBookServices
             await _dbContext.SaveChangesAsync(ctx);
 
             ResetCache();
+
             return true;
         }
         return false;
@@ -112,6 +113,6 @@ public class BookServices : IBookServices
     }
 
     private MemoryCacheEntryOptions GetCacheOptions() => new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(_cacheSettings.ExpireTime))
-                .SetAbsoluteExpiration(TimeSpan.FromHours(_cacheSettings.AbsoluteExpireTime));
+                .SetSlidingExpiration(TimeSpan.FromMinutes(_cacheSettings?.ExpireTime ?? 1))
+                .SetAbsoluteExpiration(TimeSpan.FromHours(_cacheSettings?.AbsoluteExpireTime ?? 1));
 }

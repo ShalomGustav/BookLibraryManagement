@@ -1,6 +1,8 @@
 ﻿using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.EntityFrameworkCore;
 using System;
@@ -14,8 +16,10 @@ namespace BookLibraryManagement.Tests
 
         public BookServicesTests()
         {
+            var mockCacheOptions = new Mock<IOptions<CacheSettings>>();
+            var mockCache = new MemoryCache(new MemoryCacheOptions());
             _mockDbContext = new Mock<BookDbContext>();
-            _bookServices = new BookServices(_mockDbContext.Object);
+            _bookServices = new BookServices(_mockDbContext.Object, mockCacheOptions.Object, mockCache);
         }
 
         #region ModelsOnTests
@@ -87,7 +91,7 @@ namespace BookLibraryManagement.Tests
         }
         #endregion
 
-        #region Tests
+        #region Tests 
         [Fact]
         private async Task GetAllAsyncTests()
         {
@@ -154,10 +158,9 @@ namespace BookLibraryManagement.Tests
             });
 
             _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
-            var service = new BookServices(_mockDbContext.Object);
 
             // Act
-            await service.UpdateBookAsync(book.Id, "New Title", "New Genre", 2000, CancellationToken.None);
+            await _bookServices.UpdateBookAsync(book.Id, "New Title", "New Genre", 2000, CancellationToken.None);
             // Assert
             AssertBookHelper(book, "New Title", "New Genre", 2000);
 

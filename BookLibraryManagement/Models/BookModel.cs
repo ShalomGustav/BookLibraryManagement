@@ -1,7 +1,7 @@
 ﻿namespace BookLibraryManagement.Models;
+
 public class BookModel
 {
-
     public Guid Id { get; set; }
 
     public string Title { get; set; }
@@ -13,5 +13,4 @@ public class BookModel
     public string Genre { get; set; }
 
     public Guid AuthorId { get; set; }
-
 }
