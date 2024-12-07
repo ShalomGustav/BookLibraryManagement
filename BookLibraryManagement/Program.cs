@@ -1,4 +1,5 @@
 using BookLibraryManagement.Middlewares;
+using BookLibraryManagement.Models;
 using BookLibraryManagement.Repositories;
 using BookLibraryManagement.Services;
 using FluentValidation.AspNetCore;
@@ -11,9 +12,12 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
+builder.Services.AddOptions<CacheSettings>().Bind(configuration.GetSection(nameof(CacheSettings))); // кэш
+
 builder.Services.AddDbContext<BookDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<BookServices>();
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));//регистрация для сборки

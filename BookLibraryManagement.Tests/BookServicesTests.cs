@@ -169,12 +169,13 @@ namespace BookLibraryManagement.Tests
         [InlineData("EBAC0C79-F398-4A29-8C79-08DCFB4023F4", "EBAC0C79-F398-4A29-8C79-08DCFB4023F5", false, 1)]
         private async Task DeleteBookTrueAsyncTests(Guid createdId, Guid expectedId, bool succesed, int? count = null)
         {
+            //Arrange
+
             var book = CreateTestBook(x =>
             {
                 x.Id = createdId;
             });
 
-            //Arrange
             _mockDbContext.Setup(x => x.Books).ReturnsDbSet(new List<BookModel> { book });
 
             //Act
